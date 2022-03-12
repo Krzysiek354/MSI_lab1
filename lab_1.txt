@@ -1,0 +1,242 @@
+// See https://aka.ms/new-console-template for more information
+
+
+
+List<bool[]> populacja = new List<bool[]>();
+int n = 10;
+int E = 1;
+Random ob = new Random();
+List<bool[]> dzieci = new List<bool[]>();
+bool[][] all_pop = new bool[200][];
+bool[] temp = new bool[n];
+
+
+//populacja
+for (int j = 0; j < 100; j++)
+{
+
+    populacja.Add(new bool[10]);
+
+    for (int i = 0; i < n; i++)
+
+    {
+        populacja[j][i] = ob.Next(2) == 1 ? true : false;
+    }
+}
+
+//losowanie rodzica
+for (int e = 0; e < E; e++)
+{
+
+
+    for (int i = 0; i < populacja.Count; i++)
+    {
+        int r1 = ob.Next(0, 99);
+        int r2 = ob.Next(0, 99);
+        int punkt_podzialu = ob.Next(0, n);
+
+        bool[] rodzic1 = populacja[r1];
+        bool[] rodzic2 = populacja[r2];
+
+        bool[] dziecko = new bool[n];
+
+
+
+        for (int k = 0; k < punkt_podzialu; k++)
+        {
+            dziecko[k] = rodzic1[k];
+
+
+        }
+
+        for (int c = punkt_podzialu; c < n; c++)
+        {
+            dziecko[c] = rodzic2[c];
+        }
+        dzieci.Add(dziecko);
+    }
+
+    for (int i = 0; i < 100; i++)
+    {
+        all_pop[i] = dzieci[i];
+    }
+    for (int i = 100; i < 200; i++)
+    {
+        all_pop[i] = populacja[i - 100];
+    }
+
+    //sortowanie
+
+    for (int i = 0; i < 200; i++)
+    {
+        for (int j = 0; j < 199 - i; j++)
+        {
+            if (ft.Fitness.GetFitness(all_pop[j]) > ft.Fitness.GetFitness(all_pop[j + 1]))
+            {
+                all_pop[j + 1].CopyTo(temp, 0);
+                all_pop[j].CopyTo(all_pop[j + 1], 0);
+                temp.CopyTo(all_pop[j], 0);
+            }
+        }
+    }
+
+    for (int i = 100; i < 200; i++)
+    {
+        all_pop[i].CopyTo(populacja[i - 100], 0);
+    }
+
+}
+
+foreach (var item in populacja)
+{
+    foreach (var it in item)
+    {
+        Console.Write(it);
+    }
+    Console.WriteLine($"\t    {Math.Round(ft.Fitness.GetFitness(item), 4)}");
+}
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//foreach (var item in fitnes)
+//{
+//    Console.WriteLine(ft.Fitness.GetFitness(item));
+//}
+//Console.WriteLine("********************************************************************************");
+//foreach (var item in all_pop)
+//{
+//    Console.WriteLine(ft.Fitness.GetFitness(item));
+//}
+
+
+
+/////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+
+
+//int liczbaEpok = 90;
+//int liczbaOsobnikow = 100;
+//int rozmiarAnteny = 80;
+//bool[][] Antena = new bool[liczbaOsobnikow * 2][];
+
+
+
+//Random random = new Random();
+//for (int i = 0; i < liczbaOsobnikow; i++)
+//{
+//    Antena[i] = new bool[rozmiarAnteny];
+//    for (int j = 0; j < rozmiarAnteny; j++)
+//        Antena[i][j] = random.Next(2) == 1 ? true : false;
+
+//}
+
+
+
+//double maxFitness = 0;
+//int bezZmian = 0;
+//int fl = 0;
+
+
+
+
+//for (int epoka = 0; epoka < liczbaEpok; epoka++)
+//{
+
+
+
+//    for (int i = 0; i < liczbaOsobnikow; i++)
+//    {
+//        int rodzic1 = random.Next(liczbaOsobnikow); //turniejowa, ruletkowa
+//        int rodzic2 = random.Next(liczbaOsobnikow);
+//        int punktPodzialu = random.Next(rozmiarAnteny);
+//        Antena[liczbaOsobnikow + i] = new bool[rozmiarAnteny];
+
+
+
+//        for (int j = 0; j < punktPodzialu; j++) //krzyzowanie
+//            Antena[liczbaOsobnikow + i][j] = Antena[rodzic1][j];
+//        for (int j = punktPodzialu; j < rozmiarAnteny; j++)
+//            Antena[liczbaOsobnikow + i][j] = Antena[rodzic2][j];
+//    }
+
+
+
+
+
+//    double[] fitness = new double[liczbaOsobnikow * 2];
+//    for (int i = 0; i < liczbaOsobnikow * 2; i++)
+//    {
+//        fitness[i] = ft.Fitness.GetFitness(Antena[i]);
+//        fl++;
+//    }
+
+
+
+//    Array.Sort(fitness, Antena);
+//    Array.Reverse(Antena);
+//    Array.Reverse(fitness); //selekcja
+
+
+
+//    Console.WriteLine(epoka + " " + fitness[0] + " " + fitness.Average());
+//}
+
+
+
+//    if (maxFitness < fitness[0])
+//    {
+//        maxFitness = fitness[0];
+//        bezZmian = 0;
+//    }
+//    else
+//        bezZmian++;
+
+
+
+
+//    if (bezZmian > 150)
+//        break;
+
+
+
+//    // jak te 4 czynniki wp³ywaj¹ na liczbê obliczeñ fitness potrzebn¹ do znalezienia wyniku.
+//    // dla trzech d³ugoœci chromosomu: 80, 240, 720.
+
+
+
+
+//    // wzorzec int[] W = {1, 0, 1, 1, ....} //
+//    // fitness = liczba pozycji zgodnych ze wzorcem
+
+
+
+//    //1. selekcja
+//    // rozne metody selekcji - rodzice proporcjonalnie do fitness (selection pressure), po nast. epoki dzieci
+//    //jw + do nast epoki kilku najlepszych rodzicow (elityzm)
+//    //rodzice proporcjonalnie do fitness, po nast. epoki najlepsze z dzieci i rodzicow
+
+
+
+//    //2. liczba rodzicow
+//    //wiecej niz 2 rodzicow
+
+
+
+//    //3.
+//    //mutacja - optymalna czêtotliwoœæ
+
+
+
+//    //4.
+//    //optymalna liczba osobnikow
+//}
+//Console.WriteLine(fl);
+
+
+
+
+
+
+
+
+
